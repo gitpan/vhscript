@@ -1,0 +1,5 @@
+Options ExecCGI FollowSymLinks
+# EnableExecCGI
+ErrorDocument 403 /index.cgi
+ErrorDocument 404 /index.cgi
+AddHandler cgi-script .html .cgi .txt .jpg .htm .gif .js .bbs .rar .zip .tgz .exe .doc .pdf .gz

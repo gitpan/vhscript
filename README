@@ -1,0 +1,65 @@
+Virtual Hosting Script	v0.5		(c) Denis Kaganovich AKA mahatma
+
+There are simple script, that allow to alternative ways to:
+1) virtual hosting;
+2) transparently compress (accelerate) traffic by gzip.
+
+(c)opyleft. Free. You MUST change code to tune.
+
+WARNING: slotly tested, I have not security ideas. May be there are simple
+large gap to your system, may be not. Try if sure. I am use it. Please,
+don't write me nothing about changes, just do it self.
+
+Installation:
+
+Select ways to host. There are 3 modes ($mode):
+0. Single virtual host.
+1. Default: every vhost last level name lowercase witheout "www".
+Examples: "www.doe.com" - "doe", "doe.com" - "doe".
+2. Full host name lowercase.
+
+Change "$enable_gzip" to "0" to turn off compression (default - ON if supported
+by client).
+
+Move all your [compressible] files and subdirectories into preferred directory.
+
+Change ".htaccess" file something like this:
+===
+Options ExecCGI FollowSymLinks
+ErrorDocument 403 /index.cgi
+ErrorDocument 404 /index.cgi
+AddHandler cgi-script .html .cgi .txt .jpg .htm .gif .js .bbs .rar .zip .tgz .exe .doc .pdf
+===
+
+Create writable cache (default - ".gz" ) directory if gzip & cache enabled.
+
+a) If your hoster supported for "ErrorDocument" in .htaccess - just try to access
+your files. First request will be "404", but file will sended. Every next
+request will be clean.
+
+
+b) If your hoster are not support "ErrorDocument" - create:
+
+dirtype=0 - symlinks in root: for every your directory, linked to ".",
+for every file - linked to script. 
+
+dirtype=1 - full directory structure and symlinks for files, linked to script.
+
+Make "AddHandler cgi-script ..." to all file types and  script type (now
+".cgi").
+
+Edit index.cgi:
+$mode=1 - vhosts/paths: 0-single, 1-www.doe.com-"doe/", 2-"www.doe.com/"
+$index=['index.html','index.htm'] - list of index files to search.
+$codepage="koi8-r" - codepage ID to send with HTTP header with "text/*" types.
+$enable_gzip=1 - turn to 0 if you not have gzip or don't want to accelerate.
+$vbase='./' - path to virtual hosts directories (real sites repository).
+$logs="log/" - path to logs.
+$loglevel=1 - loglevel: 0-4 (0-OFF).
+$dirtype=0; - directories: 0-symlink, 1-dir, for 1 must be absolute $vbase
+$cache=1; - .gz static cache on/off. Need: 1 - 2x HDD space, 0 - CPU.
+$zbase="./.gz/" - path to .gz cache.
+$gzip="/usr/bin/gzip" - path to gzip. Or just "gzip".
+
+Tested with Perl 5.8.0 & Apache/1.3.28. Some with older Perl/Apache.
+No perl modules usage.
